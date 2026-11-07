@@ -3,7 +3,7 @@
 **A chronological unit-commitment and economic-dispatch model of ISO New England, co-optimized with the New England natural gas system.**
 Built from first principles in Python with the open-source HiGHS MIP solver to reproduce the simulation logic of commercial power-market tools such as **PLEXOS, PROMOD and AURORA**, with an integrated gas layer in the spirit of PLEXOS gas-electric co-optimization.
 
-*Author: Cathy Kam*
+*Author: Cathy Kam* · **[Live app](https://ne-gas-power-pcm.streamlit.app)**
 
 ---
 
