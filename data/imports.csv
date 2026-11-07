@@ -1,0 +1,5 @@
+tie,zone,cap_mw,offer_type,offer_usd,can_export
+HQ Phase II,NEMA,2000,fixed,22,0
+Highgate,VT,200,fixed,24,0
+New Brunswick,ME,700,gas_linked,0,0
+NYISO,WCMA,1400,gas_linked,0,1

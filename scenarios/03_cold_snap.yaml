@@ -1,0 +1,6 @@
+name: cold_snap
+label: "Arctic cold snap"
+description: "Base 2027 with a 9-day late-January arctic outbreak (daily means near 0F), stressing the gas-electric interface."
+load_growth: 1.025
+heat_elec_mult: 1.15
+cold_snap: true

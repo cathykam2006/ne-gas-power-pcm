@@ -1,0 +1,7 @@
+name: cold_snap_lng_loss
+label: "Cold snap + LNG import loss"
+description: "Cold snap with regasified LNG send-out cut from 0.70 to 0.25 Bcf/d (e.g., Everett terminal unavailable)."
+load_growth: 1.025
+heat_elec_mult: 1.15
+cold_snap: true
+lng_bcfd: 0.25

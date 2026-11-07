@@ -1,0 +1,5 @@
+interface,limit_mw,terms
+North-South,2700,NH-NEMA:1;NH-WCMA:1;VT-WCMA:1
+Boston Import,4800,NH-NEMA:1;WCMA-NEMA:1;NEMA-SEMA:-1
+SEMA-RI Export,3300,NEMA-SEMA:-1;RI-CT:1;RI-WCMA:1
+CT Import,3400,WCMA-CT:1;RI-CT:1

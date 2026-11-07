@@ -1,0 +1,6 @@
+name: pipeline_expansion
+label: "Pipeline +0.5 Bcf/d"
+description: "Base 2027 with 0.5 Bcf/d of incremental firm interstate pipeline capacity into New England."
+load_growth: 1.025
+heat_elec_mult: 1.15
+pipeline_bcfd: 3.95

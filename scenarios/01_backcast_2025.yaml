@@ -1,0 +1,7 @@
+name: backcast_2025
+label: "2025 backcast (calibration)"
+description: "2025 Henry Hub strip (approx.), weak Quebec imports, pre-Revolution Wind fleet. Compared against ISO-NE IMM 2025 results."
+hh_monthly: [4.13, 4.19, 4.12, 3.42, 3.12, 3.02, 3.20, 2.91, 2.97, 3.15, 3.80, 4.30]
+co2_price: 21.0
+hq_mult: 0.55
+drop_ren: ["Revolution Wind"]

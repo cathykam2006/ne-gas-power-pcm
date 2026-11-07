@@ -1,0 +1,5 @@
+name: base_2027
+label: "2027 Base"
+description: "Reference case: 2027 gas strip assumption, +2.5% load with heat-pump growth, Vineyard Wind 1 and Revolution Wind online, normal Quebec hydrology."
+load_growth: 1.025
+heat_elec_mult: 1.15

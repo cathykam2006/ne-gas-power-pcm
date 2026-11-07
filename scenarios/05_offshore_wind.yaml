@@ -1,0 +1,7 @@
+name: offshore_wind
+label: "Offshore wind + storage build"
+description: "Base 2027 plus 2,400 MW additional offshore wind landing in SEMA/RI and 1,000 MW of 4-hour batteries."
+load_growth: 1.025
+heat_elec_mult: 1.15
+extra_offshore_mw: 2400
+extra_battery_mw: 1000

@@ -1,0 +1,11 @@
+name,zone,type,mw
+Onshore Wind ME,ME,wind_on,1450
+Onshore Wind NH-VT,NH,wind_on,300
+Vineyard Wind 1,SEMA,wind_off,806
+Revolution Wind,RI,wind_off,704
+Utility Solar CT,CT,solar,700
+Utility Solar MA,WCMA,solar,1300
+Utility Solar ME,ME,solar,600
+Hydro North,NH,hydro,900
+Hydro ME,ME,hydro,500
+Hydro VT-WCMA,WCMA,hydro,400
