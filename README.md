@@ -64,6 +64,18 @@ The backcast uses an approximate 2025 Henry Hub strip and weak Quebec imports, c
 ![Gas balance](figures/cold_snap_gas_balance.png)
 ![Scenario comparison](figures/scenario_comparison.png)
 
+## Interactive app
+
+`streamlit run app.py` opens an explorer with seven tabs:
+
+* **Overview**: headline results, key findings and the 2025 calibration table
+* **Scenarios**: any metric across scenarios, generation mix, change vs. base, downloadable results
+* **Cold snap**: hourly dispatch stack, LMP and gas price, and the daily gas balance for any window
+* **Prices & network**: monthly prices, price duration curves, zonal LMPs, interface congestion and flows
+* **Asset economics**: unit energy margins and how each scenario moves a given plant's margin
+* **Run a scenario**: set Henry Hub, oil, CO2, pipeline and LNG capacity, offshore wind, storage, load growth and Quebec imports, then re-solve the model live for a 1-10 day window and compare it with the base
+* **Methodology**: the full formulation and PLEXOS/PROMOD crosswalk
+
 ## Repository layout
 
 ```
