@@ -1,55 +1,53 @@
 {
- "run_at": "2026-11-09 05:35 UTC",
+ "run_at": "2026-11-09 05:43 UTC",
  "run_date": "2026-11-09",
  "window": [
   "2026-11-02",
   "2026-11-15"
  ],
- "load_ratio": 1.0,
- "oil_price": 19.0,
+ "load_ratio": 0.956,
+ "oil_price": 37.1,
  "metrics": {
   "hours": 168,
-  "hourly_mae": 6.65,
-  "hourly_bias": -1.08,
-  "hourly_corr": 0.409,
-  "daily_mae": 1.66,
+  "hourly_mae": 6.5,
+  "hourly_bias": -3.56,
+  "hourly_corr": 0.528,
+  "daily_mae": 3.56,
   "actual_avg": 40.44,
+  "load_mape_pct": 7.89,
   "track_days_scored": 1,
   "track_day_ahead_mae": 2.84
  },
  "sources": {
   "weather (Open-Meteo)": {
    "ok": true,
-   "at": "2026-11-09 05:34 UTC",
-   "last_ok": "2026-11-09 05:34 UTC"
+   "at": "2026-11-09 05:43 UTC",
+   "last_ok": "2026-11-09 05:43 UTC"
   },
   "ISO-NE day-ahead LMPs": {
    "ok": true,
-   "at": "2026-11-09 05:34 UTC",
-   "last_ok": "2026-11-09 05:34 UTC"
+   "at": "2026-11-09 05:43 UTC",
+   "last_ok": "2026-11-09 05:43 UTC"
   },
   "NYMEX Henry Hub futures": {
    "ok": true,
-   "at": "2026-11-09 05:35 UTC",
-   "last_ok": "2026-11-09 05:35 UTC"
+   "at": "2026-11-09 05:43 UTC",
+   "last_ok": "2026-11-09 05:43 UTC"
   },
   "ISO-NE load and fuel mix (EIA-930)": {
-   "ok": false,
-   "error": "EIA refused the API key (HTTP 403): check the EIA_API_KEY secret",
-   "at": "2026-11-09 05:35 UTC",
-   "last_ok": null
+   "ok": true,
+   "at": "2026-11-09 05:43 UTC",
+   "last_ok": "2026-11-09 05:43 UTC"
   },
   "Henry Hub spot (EIA)": {
-   "ok": false,
-   "error": "EIA refused the API key (HTTP 403): check the EIA_API_KEY secret",
-   "at": "2026-11-09 05:35 UTC",
-   "last_ok": null
+   "ok": true,
+   "at": "2026-11-09 05:43 UTC",
+   "last_ok": "2026-11-09 05:43 UTC"
   },
   "Heating oil / ULSD spot (EIA)": {
-   "ok": false,
-   "error": "EIA refused the API key (HTTP 403): check the EIA_API_KEY secret",
-   "at": "2026-11-09 05:35 UTC",
-   "last_ok": null
+   "ok": true,
+   "at": "2026-11-09 05:43 UTC",
+   "last_ok": "2026-11-09 05:43 UTC"
   }
  }
 }
