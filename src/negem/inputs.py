@@ -146,8 +146,8 @@ def wind_profiles(w: pd.DataFrame, seed: int = 7) -> dict:
     return {"wind_on": on, "wind_off": off}
 
 
-def build_load(sc: Scenario, w: pd.DataFrame, zones: pd.DataFrame) -> pd.DataFrame:
-    """Gross zonal load (MW) and BTM-solar-netted load. Calibrated to ~118 TWh/yr, ~24 GW peak."""
+def gross_load_shape(sc: Scenario, w: pd.DataFrame) -> np.ndarray:
+    """Unscaled gross system load from temperature, hour of day and day of week."""
     t = w["temp"].values
     hod, dow = w["hod"].values, w["dow"].values
     shape = (0.80 + 0.12 * np.exp(-((hod - 18.5) ** 2) / 10) + 0.08 * np.exp(-((hod - 9) ** 2) / 8)
@@ -155,7 +155,21 @@ def build_load(sc: Scenario, w: pd.DataFrame, zones: pd.DataFrame) -> pd.DataFra
     wkday = np.where(dow >= 5, 0.93, 1.0)
     heat = 155.0 * sc.heat_elec_mult * np.clip(52 - t, 0, None)
     cool = 30.0 * np.clip(t - 64, 0, None) ** 1.45
-    gross = (11400 * shape * wkday + heat + cool)
+    return 11400 * shape * wkday + heat + cool
+
+
+def load_scale(sc: Scenario, zones: pd.DataFrame) -> float:
+    """Factor that calibrates gross_load_shape to ~118 TWh/yr of net energy for load in the
+    reference weather year. Also used to drive the live model from real temperatures."""
+    w = build_weather(sc)
+    gross, pv = gross_load_shape(sc, w), solar_profile(w)
+    btm_mwh = zones["btm_solar_mw"].sum() * pv.sum()
+    return (118.0e6 * sc.load_growth + btm_mwh) / gross.sum()
+
+
+def build_load(sc: Scenario, w: pd.DataFrame, zones: pd.DataFrame) -> pd.DataFrame:
+    """Gross zonal load (MW) and BTM-solar-netted load. Calibrated to ~118 TWh/yr, ~24 GW peak."""
+    gross = gross_load_shape(sc, w)
     pv = solar_profile(w)
     # calibrate so ISO-NE net energy for load (after BTM PV) is ~118 TWh in the 2025 weather
     btm_mwh = zones["btm_solar_mw"].sum() * pv.sum()

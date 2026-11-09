@@ -1,0 +1,4 @@
+# extra packages for the daily live-data job (the app itself only needs requirements.txt)
+requests>=2.31
+yfinance>=0.2.50
+curl_cffi>=0.7        # some public sites block plain HTTP clients from cloud servers
