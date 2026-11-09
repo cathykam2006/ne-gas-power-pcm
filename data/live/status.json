@@ -1,18 +1,18 @@
 {
  "weather (Open-Meteo)": {
   "ok": true,
-  "at": "2026-11-09 03:00 UTC",
-  "last_ok": "2026-11-09 03:00 UTC"
+  "at": "2026-11-09 03:05 UTC",
+  "last_ok": "2026-11-09 03:05 UTC"
  },
  "ISO-NE day-ahead LMPs": {
   "ok": true,
-  "at": "2026-11-09 03:00 UTC",
-  "last_ok": "2026-11-09 03:00 UTC"
+  "at": "2026-11-09 03:05 UTC",
+  "last_ok": "2026-11-09 03:05 UTC"
  },
  "NYMEX Henry Hub futures": {
   "ok": true,
-  "at": "2026-11-09 03:00 UTC",
-  "last_ok": "2026-11-09 03:00 UTC"
+  "at": "2026-11-09 03:05 UTC",
+  "last_ok": "2026-11-09 03:05 UTC"
  },
  "ISO-NE load and fuel mix (EIA-930)": {
   "ok": false,

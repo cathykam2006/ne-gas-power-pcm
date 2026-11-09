@@ -1,5 +1,5 @@
 {
- "run_at": "2026-11-09 03:00 UTC",
+ "run_at": "2026-11-09 03:05 UTC",
  "run_date": "2026-11-08",
  "window": [
   "2026-11-01",
@@ -10,28 +10,28 @@
  "metrics": {
   "hours": 168,
   "hourly_mae": 7.45,
-  "hourly_bias": 0.17,
+  "hourly_bias": 0.16,
   "hourly_corr": 0.282,
   "daily_mae": 2.9,
   "actual_avg": 39.82,
   "track_days_scored": 1,
-  "track_day_ahead_mae": 2.89
+  "track_day_ahead_mae": 2.84
  },
  "sources": {
   "weather (Open-Meteo)": {
    "ok": true,
-   "at": "2026-11-09 03:00 UTC",
-   "last_ok": "2026-11-09 03:00 UTC"
+   "at": "2026-11-09 03:05 UTC",
+   "last_ok": "2026-11-09 03:05 UTC"
   },
   "ISO-NE day-ahead LMPs": {
    "ok": true,
-   "at": "2026-11-09 03:00 UTC",
-   "last_ok": "2026-11-09 03:00 UTC"
+   "at": "2026-11-09 03:05 UTC",
+   "last_ok": "2026-11-09 03:05 UTC"
   },
   "NYMEX Henry Hub futures": {
    "ok": true,
-   "at": "2026-11-09 03:00 UTC",
-   "last_ok": "2026-11-09 03:00 UTC"
+   "at": "2026-11-09 03:05 UTC",
+   "last_ok": "2026-11-09 03:05 UTC"
   },
   "ISO-NE load and fuel mix (EIA-930)": {
    "ok": false,
