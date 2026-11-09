@@ -16,19 +16,19 @@
  },
  "ISO-NE load and fuel mix (EIA-930)": {
   "ok": false,
-  "error": "HTTPError: 403 Client Error: Forbidden for url: https://api.eia.gov/v2/electricity/rto/region-data/data/?api_key=gh+secret+set+EIA_API_KEY+-R+cathykam2006%2Fne-gas-power-pcm&frequency=hourly&data%5B0%5D=value&start=2026-10-05T00&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&",
+  "error": "EIA refused the API key (HTTP 403): check the EIA_API_KEY secret",
   "at": "2026-11-09 05:35 UTC",
   "last_ok": null
  },
  "Henry Hub spot (EIA)": {
   "ok": false,
-  "error": "HTTPError: 403 Client Error: Forbidden for url: https://api.eia.gov/v2/natural-gas/pri/fut/data/?api_key=gh+secret+set+EIA_API_KEY+-R+cathykam2006%2Fne-gas-power-pcm&frequency=daily&data%5B0%5D=value&start=2026-07-12&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&",
+  "error": "EIA refused the API key (HTTP 403): check the EIA_API_KEY secret",
   "at": "2026-11-09 05:35 UTC",
   "last_ok": null
  },
  "Heating oil / ULSD spot (EIA)": {
   "ok": false,
-  "error": "HTTPError: 403 Client Error: Forbidden for url: https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=gh+secret+set+EIA_API_KEY+-R+cathykam2006%2Fne-gas-power-pcm&frequency=daily&data%5B0%5D=value&start=2026-07-12&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&fa",
+  "error": "EIA refused the API key (HTTP 403): check the EIA_API_KEY secret",
   "at": "2026-11-09 05:35 UTC",
   "last_ok": null
  }

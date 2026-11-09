@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import io
 import json
+import re
 import os
 import sys
 import time
@@ -53,6 +54,13 @@ MONTH_CODES = "FGHJKMNQUVXZ"
 # ------------------------------------------------------------------------------------------
 # helpers
 # ------------------------------------------------------------------------------------------
+def redact(text: str) -> str:
+    """Remove API keys from error text before it is printed or saved (the repo is public)."""
+    text = re.sub(r"(api_key=)[^&\s'\"]+", r"\1***", str(text))
+    key = os.environ.get("EIA_API_KEY", "").strip()
+    return text.replace(key, "***") if key else text
+
+
 def _get(url: str, params: dict | None = None, timeout: int = 60) -> requests.Response:
     """GET with browser headers; on HTTP 403 retry with curl_cffi (Chrome TLS fingerprint),
     since some public sites block plain HTTP clients from cloud servers."""
@@ -274,11 +282,14 @@ def fetch_all() -> dict:
             status[name] = {"ok": True, "at": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")}
             print(f"  ok    {name}")
         except Exception as e:
-            status[name] = {"ok": False, "error": f"{type(e).__name__}: {e}"[:300],
+            msg = redact(f"{type(e).__name__}: {e}")
+            if "403" in msg and "eia.gov" in msg:
+                msg = "EIA refused the API key (HTTP 403): check the EIA_API_KEY secret"
+            status[name] = {"ok": False, "error": msg[:300],
                             "at": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")}
-            print(f"  FAIL  {name}: {e}")
+            print(f"  FAIL  {name}: {msg}")
             if os.environ.get("GITHUB_ACTIONS"):
-                print(f"::warning title=Live data: {name}::{type(e).__name__}: {str(e)[:250]}")
+                print(f"::warning title=Live data: {name}::{msg[:250]}")
     if not key:
         status["ISO-NE load and fuel mix (EIA-930)"] = {"ok": False, "error": "EIA_API_KEY not set"}
         status["Henry Hub spot (EIA)"] = {"ok": False, "error": "EIA_API_KEY not set"}
