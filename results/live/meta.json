@@ -1,51 +1,54 @@
 {
- "run_at": "2026-11-09 03:05 UTC",
- "run_date": "2026-11-08",
+ "run_at": "2026-11-09 05:35 UTC",
+ "run_date": "2026-11-09",
  "window": [
-  "2026-11-01",
-  "2026-11-14"
+  "2026-11-02",
+  "2026-11-15"
  ],
  "load_ratio": 1.0,
  "oil_price": 19.0,
  "metrics": {
   "hours": 168,
-  "hourly_mae": 7.45,
-  "hourly_bias": 0.16,
-  "hourly_corr": 0.282,
-  "daily_mae": 2.9,
-  "actual_avg": 39.82,
+  "hourly_mae": 6.65,
+  "hourly_bias": -1.08,
+  "hourly_corr": 0.409,
+  "daily_mae": 1.66,
+  "actual_avg": 40.44,
   "track_days_scored": 1,
   "track_day_ahead_mae": 2.84
  },
  "sources": {
   "weather (Open-Meteo)": {
    "ok": true,
-   "at": "2026-11-09 03:05 UTC",
-   "last_ok": "2026-11-09 03:05 UTC"
+   "at": "2026-11-09 05:34 UTC",
+   "last_ok": "2026-11-09 05:34 UTC"
   },
   "ISO-NE day-ahead LMPs": {
    "ok": true,
-   "at": "2026-11-09 03:05 UTC",
-   "last_ok": "2026-11-09 03:05 UTC"
+   "at": "2026-11-09 05:34 UTC",
+   "last_ok": "2026-11-09 05:34 UTC"
   },
   "NYMEX Henry Hub futures": {
    "ok": true,
-   "at": "2026-11-09 03:05 UTC",
-   "last_ok": "2026-11-09 03:05 UTC"
+   "at": "2026-11-09 05:35 UTC",
+   "last_ok": "2026-11-09 05:35 UTC"
   },
   "ISO-NE load and fuel mix (EIA-930)": {
    "ok": false,
-   "error": "EIA_API_KEY not set",
+   "error": "HTTPError: 403 Client Error: Forbidden for url: https://api.eia.gov/v2/electricity/rto/region-data/data/?api_key=gh+secret+set+EIA_API_KEY+-R+cathykam2006%2Fne-gas-power-pcm&frequency=hourly&data%5B0%5D=value&start=2026-10-05T00&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&",
+   "at": "2026-11-09 05:35 UTC",
    "last_ok": null
   },
   "Henry Hub spot (EIA)": {
    "ok": false,
-   "error": "EIA_API_KEY not set",
+   "error": "HTTPError: 403 Client Error: Forbidden for url: https://api.eia.gov/v2/natural-gas/pri/fut/data/?api_key=gh+secret+set+EIA_API_KEY+-R+cathykam2006%2Fne-gas-power-pcm&frequency=daily&data%5B0%5D=value&start=2026-07-12&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&",
+   "at": "2026-11-09 05:35 UTC",
    "last_ok": null
   },
   "Heating oil / ULSD spot (EIA)": {
    "ok": false,
-   "error": "EIA_API_KEY not set",
+   "error": "HTTPError: 403 Client Error: Forbidden for url: https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=gh+secret+set+EIA_API_KEY+-R+cathykam2006%2Fne-gas-power-pcm&frequency=daily&data%5B0%5D=value&start=2026-07-12&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&fa",
+   "at": "2026-11-09 05:35 UTC",
    "last_ok": null
   }
  }
