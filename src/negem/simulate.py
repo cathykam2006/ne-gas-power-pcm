@@ -53,8 +53,11 @@ def _slice(arr, a, b):
     return out
 
 
-def run(sc: I.Scenario, days: int = 365, start_day: int = 0, verbose=True) -> dict:
-    D = prepare(sc)
+def run(sc: I.Scenario, days: int = 365, start_day: int = 0, verbose=True, D: dict | None = None) -> dict:
+    """Simulate `days` days. D is the prepared input set; by default the synthetic study year
+    from prepare(sc). The live model passes real weather, load and gas prices instead."""
+    D = prepare(sc) if D is None else D
+    ndays = len(D["hdd"])
     st = D["st"]
     fleet = st["fleet"]
     G = len(fleet)
@@ -75,9 +78,9 @@ def run(sc: I.Scenario, days: int = 365, start_day: int = 0, verbose=True) -> di
     t0 = time.time()
     for d in range(start_day, start_day + days):
         a = 24 * d
-        H = 24 + LOOKAHEAD if d < 364 else 24
+        H = 24 + LOOKAHEAD if d < ndays - 1 else 24
         b = a + H
-        dd1 = min(d + 1, 364)
+        dd1 = min(d + 1, ndays - 1)
         winter = lambda dd: (D["w"]["month"].values[24 * dd] in (11, 12, 1, 2, 3))
         ts = dict(
             load={z: _slice(D["load"][z].values, a, b) for z in Z},

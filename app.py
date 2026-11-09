@@ -66,6 +66,31 @@ def margins(name: str) -> pd.DataFrame:
     return pd.read_csv(RES / name / "unit_margins.csv")
 
 
+LIVE_RES = RES / "live"
+LIVE_DATA = ROOT / "data" / "live"
+
+
+def _stamp() -> float:
+    """Changes whenever the daily job commits new live files, so cached loads refresh."""
+    return max((p.stat().st_mtime for p in [LIVE_RES / "meta.json", LIVE_RES / "track_record.csv"] if p.exists()),
+               default=0.0)
+
+
+@st.cache_data
+def live_files(stamp: float) -> dict | None:
+    if not (LIVE_RES / "meta.json").exists():
+        return None
+    import json
+    out = {"meta": json.loads((LIVE_RES / "meta.json").read_text()),
+           "daily": pd.read_csv(LIVE_RES / "daily.csv", parse_dates=["date"]),
+           "inp": pd.read_csv(LIVE_RES / "inputs_hourly.csv.gz", index_col=0, parse_dates=True)}
+    tr = LIVE_RES / "track_record.csv"
+    out["track"] = pd.read_csv(tr, parse_dates=["run_date", "target_date"]) if tr.exists() else pd.DataFrame()
+    fm = LIVE_DATA / "isone_fuelmix.csv"
+    out["fuelmix"] = pd.read_csv(fm, parse_dates=["time"]) if fm.exists() else None
+    return out
+
+
 def fuel_stack(h: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame({k: h[[c for c in v if c in h]].sum(axis=1) for k, v in FUEL_GROUPS.items()}, index=h.index)
 
@@ -109,12 +134,12 @@ with st.sidebar:
         "- 8 ISO-NE load zones, 4 interface limits, 30-min reserves\n"
         "- LMPs from an LP re-solve with fast-start pricing"
     )
-    st.caption("Fleet aggregated from public plant data; weather, load and renewable shapes are synthetic "
-               "but calibrated. Results are illustrative, not a forecast.")
+    st.caption("Fleet aggregated from public plant data. Scenario tabs use a synthetic but calibrated weather "
+               "year; the Live tab runs on real weather, load and prices, refreshed every morning.")
     st.markdown(f"[GitHub repository]({REPO})")
     st.caption("Built by Cathy Kam")
 
-tabs = st.tabs(["Overview", "Scenarios", "Cold snap", "Prices & network", "Asset economics",
+tabs = st.tabs(["Overview", "Live (real data)", "Scenarios", "Cold snap", "Prices & network", "Asset economics",
                 "Run a scenario", "Methodology"])
 
 # ======================================================================================
@@ -181,9 +206,135 @@ with tabs[0]:
     st.altair_chart(alt.layer(bars, lines).resolve_scale(y="independent").properties(height=320), width="stretch")
 
 # ======================================================================================
-# Scenarios
+# Live (real data)
 # ======================================================================================
 with tabs[1]:
+    L = live_files(_stamp())
+    if L is None:
+        st.info("The live run has not produced results yet. It runs every morning via GitHub Actions "
+                "(workflow: Live model daily refresh).")
+    else:
+        m, dl, inp, tr = L["meta"], L["daily"], L["inp"], L["track"]
+        run_day = pd.Timestamp(m["run_date"])
+        st.subheader("The model on real data, re-solved every morning")
+        st.markdown(
+            "Each morning the model pulls **real New England weather** (actual and forecast), **ISO-NE load and "
+            "day-ahead prices**, and **Henry Hub and oil prices**, then re-solves unit commitment, dispatch and the "
+            "gas market for the **past 7 days** (scored against ISO-NE's published day-ahead prices) and the "
+            f"**next 7 days** (forecast). Last run: {m['run_at']}.")
+        mt = m.get("metrics", {})
+        fc = dl[dl["kind"] == "forecast"]
+        tmr = fc[fc["date"] == run_day + pd.Timedelta(days=1)]
+        last_act = dl.dropna(subset=["lmp_hub_actual"])
+        k = st.columns(4)
+        if len(tmr):
+            r = tmr.iloc[0]
+            k[0].metric(f"Model forecast, {r.date:%a %b %-d}", f"${r.lmp_hub_model:,.2f}/MWh",
+                        help="Internal Hub day-ahead price, daily average (load-weighted across the 8 zones).")
+        if len(last_act):
+            r = last_act.iloc[-1]
+            k[1].metric(f"ISO-NE actual, {r.date:%a %b %-d}", f"${r.lmp_hub_actual:,.2f}/MWh",
+                        delta=f"model {r.lmp_hub_model - r.lmp_hub_actual:+.2f}", delta_color="off")
+        if "daily_mae" in mt:
+            k[2].metric("Past 7 days: avg daily error", f"${mt['daily_mae']:,.2f}/MWh",
+                        help=f"Mean absolute error of the model's daily hub price vs. ISO-NE day-ahead "
+                             f"(actual average ${mt['actual_avg']:.2f}/MWh). Hourly error ${mt['hourly_mae']:.2f}.")
+        if len(tmr):
+            r = tmr.iloc[0]
+            k[3].metric(f"Model citygate gas, {r.date:%a %b %-d} (Henry Hub {r.hh:,.2f})", f"${r.gas_price:,.2f}/MMBtu",
+                        help="New England citygate gas price the model clears, from the Henry Hub input "
+                             "(NYMEX front month) plus pipeline basis, LNG and peak-shaving supply.")
+
+        # ---- hourly hub price: model vs ISO-NE day-ahead, with the forecast zone shaded
+        st.markdown("**Internal Hub price, hourly: model vs. ISO-NE day-ahead**")
+        ph = inp[["lmp_hub_model"] + (["da_lmp_HUB"] if "da_lmp_HUB" in inp else [])].copy()
+        ph.columns = ["Model"] + (["ISO-NE day-ahead (actual)"] if "da_lmp_HUB" in inp else [])
+        pl = ph.reset_index(names="time").melt("time", var_name="series", value_name="$/MWh").dropna()
+        zone = pd.DataFrame({"a": [run_day], "b": [inp.index.max()]})
+        shade = alt.Chart(zone).mark_rect(color="#3a7dc1", opacity=0.07).encode(x="a:T", x2="b:T")
+        split = alt.Chart(zone).mark_rule(strokeDash=[3, 3], color="#555").encode(x="a:T")
+        lab = alt.Chart(pd.DataFrame({"t": [run_day], "txt": ["  FORECAST →"]})).mark_text(
+            align="left", baseline="top", dy=4, color="#3a7dc1", fontWeight="bold").encode(x="t:T", y=alt.value(4), text="txt:N")
+        lines = alt.Chart(pl).mark_line(strokeWidth=2).encode(
+            x=alt.X("time:T", title=None, axis=alt.Axis(format="%a %b %d", labelAngle=0, tickCount=7)),
+            y=alt.Y("$/MWh:Q", title="$/MWh"),
+            color=alt.Color("series:N", scale=alt.Scale(domain=["ISO-NE day-ahead (actual)", "Model"], range=["#222", "#3a7dc1"]),
+                            legend=alt.Legend(orient="top", title=None)),
+            strokeDash=alt.condition(alt.datum.series == "Model", alt.value([6, 3]), alt.value([1, 0])),
+            tooltip=[alt.Tooltip("time:T", format="%a %b %d %H:00"), "series", alt.Tooltip("$/MWh:Q", format=".2f")])
+        st.altair_chart((shade + split + lines + lab).properties(height=320), width="stretch")
+        st.caption("Shaded: the next 7 days, a forecast from forecast weather and the NYMEX Henry Hub price. "
+                   "Before it: the model re-run on actual weather, load and gas prices, next to ISO-NE's published "
+                   "day-ahead Internal Hub price.")
+
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown("**Daily: model vs. actual hub price**")
+            dd = dl.melt("date", ["lmp_hub_model", "lmp_hub_actual"], "series", "$/MWh").dropna()
+            dd["series"] = dd["series"].map({"lmp_hub_model": "Model", "lmp_hub_actual": "ISO-NE day-ahead (actual)"})
+            bars = alt.Chart(dd).mark_bar().encode(
+                x=alt.X("yearmonthdate(date):O", title=None, axis=alt.Axis(format="%b %d", labelAngle=-45)),
+                xOffset="series:N", y=alt.Y("$/MWh:Q"),
+                color=alt.Color("series:N", scale=alt.Scale(domain=["ISO-NE day-ahead (actual)", "Model"], range=["#222", "#3a7dc1"]),
+                                legend=alt.Legend(orient="top", title=None)),
+                tooltip=[alt.Tooltip("date:T", format="%a %b %d"), "series", alt.Tooltip("$/MWh:Q", format=".2f")])
+            st.altair_chart(bars.properties(height=260), width="stretch")
+        with c2:
+            st.markdown("**Temperature and load**")
+            ld = inp[["load_model_mw"] + (["load_actual_mw"] if inp["load_actual_mw"].notna().any() else [])] / 1e3
+            ld.columns = ["Model (from temperature)"] + (["ISO-NE actual (EIA-930)"] if ld.shape[1] > 1 else [])
+            ll = ld.reset_index(names="time").melt("time", var_name="series", value_name="GW").dropna()
+            lc = alt.Chart(ll).mark_line(strokeWidth=1.8).encode(
+                x=alt.X("time:T", title=None, axis=alt.Axis(format="%b %d", labelAngle=0)), y=alt.Y("GW:Q", title="Load (GW)"),
+                color=alt.Color("series:N", scale=alt.Scale(domain=["ISO-NE actual (EIA-930)", "Model (from temperature)"],
+                                                            range=["#222", "#3a7dc1"]), legend=alt.Legend(orient="top", title=None)),
+                tooltip=[alt.Tooltip("time:T", format="%a %b %d %H:00"), "series", alt.Tooltip("GW:Q", format=".2f")])
+            tc = alt.Chart(inp.reset_index(names="time")).mark_line(color="#e07b39", strokeWidth=1.2, opacity=0.8).encode(
+                x="time:T", y=alt.Y("temp_f:Q", title="Temperature (°F, orange)"),
+                tooltip=[alt.Tooltip("time:T", format="%a %b %d %H:00"), alt.Tooltip("temp_f:Q", title="°F", format=".0f")])
+            st.altair_chart(alt.layer(lc, tc).resolve_scale(y="independent").properties(height=260), width="stretch")
+            if "load_mape_pct" in mt:
+                st.caption(f"Model load vs. actual over the past 7 days: {mt['load_mape_pct']:.1f}% average error "
+                           f"(scaled by {m['load_ratio']:.3f} to match the last 30 days of actual demand).")
+            else:
+                st.caption("Actual ISO-NE load appears once the EIA API key is added to the repository.")
+
+        st.markdown("**Day-ahead track record**: forecasts saved each morning and scored when ISO-NE publishes the price")
+        if len(tr) and "actual_hub" in tr and tr["actual_hub"].notna().any():
+            t1 = tr[(tr["horizon_days"] == 1)].dropna(subset=["actual_hub"]).sort_values("target_date", ascending=False)
+            t1 = t1.assign(error=(t1["model_hub"] - t1["actual_hub"]).round(2))
+            st.dataframe(t1[["target_date", "run_date", "model_hub", "actual_hub", "error", "model_gas", "hh"]].rename(columns={
+                "target_date": "Delivery day", "run_date": "Forecast made", "model_hub": "Model hub ($/MWh)",
+                "actual_hub": "ISO-NE day-ahead ($/MWh)", "error": "Error", "model_gas": "Model citygate gas ($/MMBtu)",
+                "hh": "Henry Hub input"}), hide_index=True, width="stretch",
+                column_config={"Delivery day": st.column_config.DateColumn(format="ddd MMM D"),
+                               "Forecast made": st.column_config.DateColumn(format="MMM D")})
+            if "track_day_ahead_mae" in mt:
+                n_ = mt["track_days_scored"]
+                st.caption(f"{n_} day-ahead forecast{'s' if n_ != 1 else ''} scored so far; average error "
+                           f"${mt['track_day_ahead_mae']:.2f}/MWh. The record grows by one day each morning.")
+        else:
+            st.caption("The first forecasts are scored the day after they are made.")
+
+        st.markdown("**Data sources**")
+        use = {"weather (Open-Meteo)": "Temperature (load, gas demand), solar radiation and 100 m wind speed",
+               "ISO-NE day-ahead LMPs": "Actual prices the model is scored against",
+               "NYMEX Henry Hub futures": "Henry Hub gas price for forecast days",
+               "ISO-NE load and fuel mix (EIA-930)": "Actual load for past days; calibrates the load forecast",
+               "Henry Hub spot (EIA)": "Henry Hub gas price for past days",
+               "Heating oil / ULSD spot (EIA)": "Oil-unit fuel cost"}
+        rows = [{"Source": k_, "Status": "✅ updated" if v.get("ok") else ("⚠️ " + v.get("error", "failed")),
+                 "Last successful update": v.get("last_ok") or "–", "Used for": use.get(k_, "")}
+                for k_, v in m.get("sources", {}).items()]
+        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+        st.caption("Limits: the fleet is aggregated and nuclear refueling outages are not tracked live; New England "
+                   "citygate (Algonquin) gas prices are not freely published, so the model's gas price is not scored. "
+                   "Hourly price shape is less accurate than the daily level.")
+
+# ======================================================================================
+# Scenarios
+# ======================================================================================
+with tabs[2]:
     st.subheader("Scenario comparison against the 2027 base")
     with st.expander("Scenario definitions"):
         st.dataframe(META[["label", "description", "file"]], hide_index=True, width="stretch")
@@ -236,7 +387,7 @@ with tabs[1]:
 # ======================================================================================
 # Cold snap
 # ======================================================================================
-with tabs[2]:
+with tabs[3]:
     st.subheader("Inside a winter week")
     cc = st.columns([1.3, 1])
     sc_label = cc[0].selectbox("Scenario", list(S["label"]), index=list(S["scenario"]).index("cold_snap_lng_loss"), key="cs_sc")
@@ -293,7 +444,7 @@ with tabs[2]:
 # ======================================================================================
 # Prices & network
 # ======================================================================================
-with tabs[3]:
+with tabs[4]:
     st.subheader("Prices")
     pick = st.multiselect("Scenarios", list(S["label"]),
                           default=["2025 backcast (calibration)", "2027 Base", "Cold snap + LNG import loss", "Pipeline +0.5 Bcf/d"])
@@ -348,7 +499,7 @@ with tabs[3]:
 # ======================================================================================
 # Asset economics
 # ======================================================================================
-with tabs[4]:
+with tabs[5]:
     st.subheader("Unit energy margins")
     st.markdown("Energy revenue at zonal LMPs minus fuel, CO2 and variable O&M, in $/kW-yr: the "
                 "energy-only view used in asset valuation. Capacity and ancillary revenues are not included.")
@@ -408,7 +559,7 @@ def run_window(params: dict, start_day: int, days: int):
     return kp, h[["lmp_NEMA"]].assign(**{k: fuel_stack(h)[k] for k in FUEL_GROUPS}), d
 
 
-with tabs[5]:
+with tabs[6]:
     st.subheader("Run the model live")
     st.markdown("Set the levers, pick a window, and the app re-solves the rolling unit commitment and gas balance "
                 "for those days, then compares the result with the 2027 base over the same window and weather. "
@@ -488,5 +639,5 @@ with tabs[5]:
 # ======================================================================================
 # Methodology
 # ======================================================================================
-with tabs[6]:
+with tabs[7]:
     st.markdown((ROOT / "docs" / "methodology.md").read_text())

@@ -64,11 +64,43 @@ The backcast uses an approximate 2025 Henry Hub strip and weak Quebec imports, c
 ![Gas balance](figures/cold_snap_gas_balance.png)
 ![Scenario comparison](figures/scenario_comparison.png)
 
+## Live mode: the model on real data, refreshed daily
+
+Every morning a GitHub Actions job (`.github/workflows/live-daily.yml`) pulls real data, re-solves the
+model for the **past 7 days** and the **next 7 days**, and commits the results that the app's
+**Live (real data)** tab shows.
+
+| Source | What it supplies | Key |
+|---|---|---|
+| [Open-Meteo](https://open-meteo.com/) | Hourly temperature, solar radiation and 100 m wind speed for 8 New England cities and 2 wind sites, actual (31 days) and forecast (10 days) | none |
+| [EIA-930](https://www.eia.gov/electricity/gridmonitor/) via the EIA API | ISO-NE hourly demand, EIA's demand forecast, generation by fuel | `EIA_API_KEY` |
+| [ISO-NE ISO Express](https://www.iso-ne.com/isoexpress/) | Day-ahead hourly LMPs for the Internal Hub and the 8 load zones | none |
+| NYMEX via Yahoo Finance | Henry Hub front month and the next 12 monthly contracts | none |
+| EIA API | Daily Henry Hub spot and New York Harbor ULSD spot (oil-unit fuel cost) | `EIA_API_KEY` |
+
+How the inputs are used (`src/negem/live.py`): temperature is weighted by zone load share and drives
+load, LDC gas demand and the gas supply curve; past hours use actual ISO-NE demand, future hours use
+the model's temperature-driven load scaled to the last 30 days of actual demand; wind and solar
+capacity factors come from the forecast wind speeds and solar radiation; Henry Hub is the EIA spot
+price for past days and the NYMEX front month for future days.
+
+Each run is scored against ISO-NE's published day-ahead Internal Hub price, and its day-ahead
+forecasts are saved to `results/live/track_record.csv` and scored as the actual prices are posted,
+building an out-of-sample record. Every source is fetched independently; one outage keeps the previous
+data and is flagged on the Live tab instead of stopping the run.
+
+```bash
+export EIA_API_KEY=...                  # optional locally; set as a repository secret for the daily job
+PYTHONPATH=src python -m negem.live_data
+PYTHONPATH=src python -m negem.live
+```
+
 ## Interactive app
 
-`streamlit run app.py` opens an explorer with seven tabs:
+`streamlit run app.py` opens an explorer with eight tabs:
 
 * **Overview**: headline results, key findings and the 2025 calibration table
+* **Live (real data)**: the model re-solved each morning on real weather, load and prices; model vs. ISO-NE day-ahead prices, a 7-day forecast, and the day-ahead track record
 * **Scenarios**: any metric across scenarios, generation mix, change vs. base, downloadable results
 * **Cold snap**: hourly dispatch stack, LMP and gas price, and the daily gas balance for any window
 * **Prices & network**: monthly prices, price duration curves, zonal LMPs, interface congestion and flows
@@ -87,6 +119,10 @@ src/negem/
   model.py       36-hour SCUC/ED + gas-balance formulation
   simulate.py    rolling-horizon driver and state carry-over
   report.py      KPIs, event-window metrics, unit energy margins, figures
+  live_data.py   connectors: Open-Meteo, EIA-930, ISO-NE day-ahead LMPs, NYMEX, EIA spot prices
+  live.py        live run: past 7 + next 7 days on real inputs, scoring and track record
+data/live/       daily-refreshed real data (written by the live job)
+results/live/    latest live run and the day-ahead track record
 results/         hourly, daily and unit-level outputs per scenario; summary.csv
 figures/         publication charts
 app.py           Streamlit explorer
@@ -109,8 +145,10 @@ in `src/negem/inputs.py` (gas strip, carbon price, pipeline/LNG capacity, offsho
 
 ## Limitations
 
-The fleet is an aggregated, approximate representation built from public plant data; weather,
-load, wind and solar shapes are synthetic but seeded and calibrated. The network is zonal, not nodal,
+The fleet is an aggregated, approximate representation built from public plant data. The scenario
+studies use a synthetic but seeded and calibrated weather year; the live mode uses real weather, load
+and prices. New England citygate (Algonquin) gas prices are not freely published, so the model's gas
+price is not scored in live mode. The network is zonal, not nodal,
 and outages are expected derates rather than Monte Carlo draws. The structure is designed so real
 ISO-NE hourly load, NOAA weather and EIA-923 unit data can be dropped in without changing the
 optimization code.
