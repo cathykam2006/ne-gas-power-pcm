@@ -212,9 +212,12 @@ def run_live(verbose: bool = True) -> dict:
     new = pd.DataFrame({"run_date": today.strftime("%Y-%m-%d"), "target_date": fc["date"].dt.strftime("%Y-%m-%d"),
                         "horizon_days": (fc["date"] - today).dt.days, "model_hub": fc["lmp_hub_model"].round(2),
                         "model_gas": fc["gas_price"].round(2), "model_peak_load": fc["peak_load_model"].round(0),
-                        "hh": fc["hh"].round(3)})
+                        "hh": fc["hh"].round(3),
+                        "made_at": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")})
     tr = pd.concat([pd.read_csv(tr_p), new], ignore_index=True) if tr_p.exists() else new
-    tr = tr.drop_duplicates(["run_date", "target_date"], keep="last")
+    # keep the FIRST forecast made each day: a later same-day run may come after ISO-NE has
+    # posted the next day's prices, so it must not replace the earlier, genuinely ahead forecast
+    tr = tr.drop_duplicates(["run_date", "target_date"], keep="first")
     if da is not None and "da_lmp_HUB" in da:
         act = da["da_lmp_HUB"].groupby(da.index.normalize()).mean()
         act.index = act.index.strftime("%Y-%m-%d")

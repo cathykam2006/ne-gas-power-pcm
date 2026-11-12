@@ -5,7 +5,11 @@ name: Live model daily refresh
 
 on:
   schedule:
-    - cron: "23 11 * * *"     # 6:23 am EST / 7:23 am EDT, before the day-ahead market posts
+    # ISO-NE posts next-day day-ahead prices around 1:30 pm Eastern, and GitHub often starts
+    # scheduled jobs hours late. Two runs make sure a forecast is in before the market posts;
+    # the track record keeps the first forecast made each day.
+    - cron: "13 5 * * *"      # 12:13 am EST / 1:13 am EDT
+    - cron: "23 11 * * *"     # 6:23 am EST / 7:23 am EDT (backup and refresh)
   workflow_dispatch:
 
 permissions:
