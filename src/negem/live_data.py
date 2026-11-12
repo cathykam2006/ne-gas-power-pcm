@@ -61,10 +61,30 @@ def redact(text: str) -> str:
     return text.replace(key, "***") if key else text
 
 
-def _get(url: str, params: dict | None = None, timeout: int = 60) -> requests.Response:
-    """GET with browser headers; on HTTP 403 retry with curl_cffi (Chrome TLS fingerprint),
-    since some public sites block plain HTTP clients from cloud servers."""
-    r = requests.get(url, params=params, headers=UA, timeout=timeout)
+RETRY_WAIT = 20      # seconds before the 2nd attempt; doubled before the 3rd
+
+
+def _request(url: str, params=None, timeout: int = 90, attempts: int = 3) -> requests.Response:
+    """requests.get with retries on timeouts, dropped connections and 5xx/429 responses.
+    Free public APIs occasionally stall for a minute; one slow response should not fail the day."""
+    for i in range(attempts):
+        try:
+            r = requests.get(url, params=params, headers=UA, timeout=timeout)
+            if r.status_code in (429, 500, 502, 503, 504) and i < attempts - 1:
+                raise requests.HTTPError(f"HTTP {r.status_code}", response=r)
+            return r
+        except (requests.Timeout, requests.ConnectionError, requests.HTTPError) as e:
+            if i == attempts - 1:
+                raise
+            wait = RETRY_WAIT * 2 ** i
+            print(f"    retrying in {wait}s after {type(e).__name__}")
+            time.sleep(wait)
+
+
+def _get(url: str, params: dict | None = None, timeout: int = 90) -> requests.Response:
+    """GET with browser headers and retries; on HTTP 403 retry with curl_cffi (Chrome TLS
+    fingerprint), since some public sites block plain HTTP clients from cloud servers."""
+    r = _request(url, params=params, timeout=timeout)
     if r.status_code == 403:
         try:
             from curl_cffi import requests as cf
@@ -132,7 +152,7 @@ def _eia(route: str, facets: dict, start: str, key: str, frequency: str = "hourl
              ("sort[0][column]", "period"), ("sort[0][direction]", "asc"), ("offset", offset), ("length", 5000)]
         for k, vals in facets.items():
             q += [(f"facets[{k}][]", v) for v in vals]
-        r = requests.get(f"https://api.eia.gov/v2/{route}/data/", params=q, timeout=90)
+        r = _request(f"https://api.eia.gov/v2/{route}/data/", params=q, timeout=90)
         r.raise_for_status()
         resp = r.json()["response"]
         rows += resp["data"]
@@ -301,7 +321,20 @@ def fetch_all() -> dict:
     return status
 
 
+def weather_age_hours() -> float | None:
+    """Hours since the saved weather forecast was issued (None if there is none)."""
+    p = LIVE / "weather_forecast.csv"
+    if not p.exists():
+        return None
+    issued = pd.read_csv(p, usecols=["issued"])["issued"].max()
+    return (pd.Timestamp.now(TZ).tz_localize(None) - pd.Timestamp(issued)).total_seconds() / 3600
+
+
 if __name__ == "__main__":
     st = fetch_all()
     if "--strict" in sys.argv and not st.get("weather (Open-Meteo)", {}).get("ok"):
-        sys.exit("Weather download failed; the live model cannot run without it.")
+        age = weather_age_hours()
+        if age is None or age > 36:
+            sys.exit("Weather download failed and the saved forecast is missing or more than 36 hours old; "
+                     "the live model cannot run without it.")
+        print(f"  Weather download failed; running on the saved forecast ({age:.0f} hours old).")
