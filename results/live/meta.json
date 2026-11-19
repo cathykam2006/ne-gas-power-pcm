@@ -1,5 +1,5 @@
 {
- "run_at": "2026-11-19 14:26 UTC",
+ "run_at": "2026-11-19 19:30 UTC",
  "run_date": "2026-11-19",
  "window": [
   "2026-11-12",
@@ -15,39 +15,39 @@
   "daily_mae": 11.08,
   "actual_avg": 55.4,
   "load_mape_pct": 10.63,
-  "track_days_scored": 11,
-  "track_day_ahead_mae": 5.86
+  "track_days_scored": 12,
+  "track_day_ahead_mae": 5.55
  },
  "sources": {
   "weather (Open-Meteo)": {
    "ok": true,
-   "at": "2026-11-19 14:25 UTC",
-   "last_ok": "2026-11-19 14:25 UTC"
+   "at": "2026-11-19 19:30 UTC",
+   "last_ok": "2026-11-19 19:30 UTC"
   },
   "ISO-NE day-ahead LMPs": {
    "ok": true,
-   "at": "2026-11-19 14:25 UTC",
-   "last_ok": "2026-11-19 14:25 UTC"
+   "at": "2026-11-19 19:30 UTC",
+   "last_ok": "2026-11-19 19:30 UTC"
   },
   "NYMEX Henry Hub futures": {
    "ok": true,
-   "at": "2026-11-19 14:25 UTC",
-   "last_ok": "2026-11-19 14:25 UTC"
+   "at": "2026-11-19 19:30 UTC",
+   "last_ok": "2026-11-19 19:30 UTC"
   },
   "ISO-NE load and fuel mix (EIA-930)": {
    "ok": true,
-   "at": "2026-11-19 14:25 UTC",
-   "last_ok": "2026-11-19 14:25 UTC"
+   "at": "2026-11-19 19:30 UTC",
+   "last_ok": "2026-11-19 19:30 UTC"
   },
   "Henry Hub spot (EIA)": {
    "ok": true,
-   "at": "2026-11-19 14:25 UTC",
-   "last_ok": "2026-11-19 14:25 UTC"
+   "at": "2026-11-19 19:30 UTC",
+   "last_ok": "2026-11-19 19:30 UTC"
   },
   "Heating oil / ULSD spot (EIA)": {
    "ok": true,
-   "at": "2026-11-19 14:25 UTC",
-   "last_ok": "2026-11-19 14:25 UTC"
+   "at": "2026-11-19 19:30 UTC",
+   "last_ok": "2026-11-19 19:30 UTC"
   }
  }
 }
