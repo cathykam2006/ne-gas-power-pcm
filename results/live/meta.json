@@ -1,53 +1,53 @@
 {
- "run_at": "2026-11-23 22:42 UTC",
- "run_date": "2026-11-23",
+ "run_at": "2026-11-24 15:54 UTC",
+ "run_date": "2026-11-24",
  "window": [
-  "2026-11-16",
-  "2026-11-29"
+  "2026-11-17",
+  "2026-11-30"
  ],
- "load_ratio": 0.9394,
+ "load_ratio": 0.9444,
  "oil_price": 31.79,
  "metrics": {
   "hours": 168,
-  "hourly_mae": 8.95,
-  "hourly_bias": -5.56,
-  "hourly_corr": 0.427,
-  "daily_mae": 5.74,
-  "actual_avg": 49.11,
-  "load_mape_pct": 11.98,
+  "hourly_mae": 7.33,
+  "hourly_bias": -2.9,
+  "hourly_corr": 0.499,
+  "daily_mae": 3.53,
+  "actual_avg": 46.57,
+  "load_mape_pct": 11.37,
   "track_days_scored": 16,
   "track_day_ahead_mae": 5.54
  },
  "sources": {
   "weather (Open-Meteo)": {
    "ok": true,
-   "at": "2026-11-23 22:42 UTC",
-   "last_ok": "2026-11-23 22:42 UTC"
+   "at": "2026-11-24 15:54 UTC",
+   "last_ok": "2026-11-24 15:54 UTC"
   },
   "ISO-NE day-ahead LMPs": {
    "ok": true,
-   "at": "2026-11-23 22:42 UTC",
-   "last_ok": "2026-11-23 22:42 UTC"
+   "at": "2026-11-24 15:54 UTC",
+   "last_ok": "2026-11-24 15:54 UTC"
   },
   "NYMEX Henry Hub futures": {
    "ok": true,
-   "at": "2026-11-23 22:42 UTC",
-   "last_ok": "2026-11-23 22:42 UTC"
+   "at": "2026-11-24 15:54 UTC",
+   "last_ok": "2026-11-24 15:54 UTC"
   },
   "ISO-NE load and fuel mix (EIA-930)": {
    "ok": true,
-   "at": "2026-11-23 22:42 UTC",
-   "last_ok": "2026-11-23 22:42 UTC"
+   "at": "2026-11-24 15:54 UTC",
+   "last_ok": "2026-11-24 15:54 UTC"
   },
   "Henry Hub spot (EIA)": {
    "ok": true,
-   "at": "2026-11-23 22:42 UTC",
-   "last_ok": "2026-11-23 22:42 UTC"
+   "at": "2026-11-24 15:54 UTC",
+   "last_ok": "2026-11-24 15:54 UTC"
   },
   "Heating oil / ULSD spot (EIA)": {
    "ok": true,
-   "at": "2026-11-23 22:42 UTC",
-   "last_ok": "2026-11-23 22:42 UTC"
+   "at": "2026-11-24 15:54 UTC",
+   "last_ok": "2026-11-24 15:54 UTC"
   }
  }
 }
