@@ -1,53 +1,54 @@
 {
- "run_at": "2026-11-25 15:38 UTC",
+ "run_at": "2026-11-25 20:34 UTC",
  "run_date": "2026-11-25",
  "window": [
   "2026-11-18",
   "2026-12-01"
  ],
  "load_ratio": 0.9439,
- "oil_price": 31.79,
+ "oil_price": 29.61,
  "metrics": {
   "hours": 168,
-  "hourly_mae": 6.73,
-  "hourly_bias": -0.22,
-  "hourly_corr": 0.556,
-  "daily_mae": 2.07,
+  "hourly_mae": 6.84,
+  "hourly_bias": -1.57,
+  "hourly_corr": 0.56,
+  "daily_mae": 2.42,
   "actual_avg": 46.05,
   "load_mape_pct": 10.86,
-  "track_days_scored": 17,
-  "track_day_ahead_mae": 5.94
+  "track_days_scored": 18,
+  "track_day_ahead_mae": 5.78
  },
  "sources": {
   "weather (Open-Meteo)": {
    "ok": true,
-   "at": "2026-11-25 15:35 UTC",
-   "last_ok": "2026-11-25 15:35 UTC"
+   "at": "2026-11-25 20:30 UTC",
+   "last_ok": "2026-11-25 20:30 UTC"
   },
   "ISO-NE day-ahead LMPs": {
    "ok": true,
-   "at": "2026-11-25 15:35 UTC",
-   "last_ok": "2026-11-25 15:35 UTC"
+   "at": "2026-11-25 20:30 UTC",
+   "last_ok": "2026-11-25 20:30 UTC"
   },
   "NYMEX Henry Hub futures": {
    "ok": true,
-   "at": "2026-11-25 15:35 UTC",
-   "last_ok": "2026-11-25 15:35 UTC"
+   "at": "2026-11-25 20:30 UTC",
+   "last_ok": "2026-11-25 20:30 UTC"
   },
   "ISO-NE load and fuel mix (EIA-930)": {
-   "ok": true,
-   "at": "2026-11-25 15:37 UTC",
+   "ok": false,
+   "error": "HTTPError: 502 Server Error: Bad Gateway for url: https://api.eia.gov/v2/electricity/rto/region-data/data/?api_key=***&frequency=hourly&data%5B0%5D=value&start=2026-10-21T00&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Brespondent%5D%5B%5D=ISNE&facets%5B",
+   "at": "2026-11-25 20:33 UTC",
    "last_ok": "2026-11-25 15:37 UTC"
   },
   "Henry Hub spot (EIA)": {
    "ok": true,
-   "at": "2026-11-25 15:37 UTC",
-   "last_ok": "2026-11-25 15:37 UTC"
+   "at": "2026-11-25 20:33 UTC",
+   "last_ok": "2026-11-25 20:33 UTC"
   },
   "Heating oil / ULSD spot (EIA)": {
    "ok": true,
-   "at": "2026-11-25 15:38 UTC",
-   "last_ok": "2026-11-25 15:38 UTC"
+   "at": "2026-11-25 20:34 UTC",
+   "last_ok": "2026-11-25 20:34 UTC"
   }
  }
 }
