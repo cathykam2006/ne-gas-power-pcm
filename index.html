@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>New England Gas-Power Production Cost Model | Cathy Kam</title>
+  <meta name="description" content="A New England power and natural gas production cost model: daily forecasts scored against ISO-NE, policy scenarios, and a live model you can run in your browser. Built by Cathy Kam." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.3/build/stlite.css" />
+</head>
+<body>
+  <div id="root"></div>
+  <noscript>This app runs Python in your browser, so it needs JavaScript turned on.</noscript>
+  <script type="module">
+    import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.3/build/stlite.js";
+
+    // Everything comes straight from the main branch, so the daily live run
+    // (.github/workflows/live-daily.yml) shows up here automatically.
+    // A file listed here must exist on main; add new ones when the app needs them.
+    const RAW = "https://raw.githubusercontent.com/cathykam2006/ne-gas-power-pcm/main/";
+    const FROM_MAIN = [
+      "app.py",
+      "data/fleet.csv",
+      "data/imports.csv",
+      "data/interfaces.csv",
+      "data/live/henry_hub_spot.csv",
+      "data/live/isone_da_lmp.csv",
+      "data/live/isone_fuelmix.csv",
+      "data/live/isone_load.csv",
+      "data/live/nymex_front.csv",
+      "data/live/nymex_strip.csv",
+      "data/live/status.json",
+      "data/live/ulsd_spot.csv",
+      "data/live/weather_actual.csv",
+      "data/live/weather_forecast.csv",
+      "data/renewables.csv",
+      "data/storage.csv",
+      "data/transmission.csv",
+      "data/zones.csv",
+      "results/backcast_2025/daily.csv",
+      "results/backcast_2025/hourly.csv.gz",
+      "results/backcast_2025/unit_margins.csv",
+      "results/backcast_2025/units.csv.gz",
+      "results/base_2027/daily.csv",
+      "results/base_2027/hourly.csv.gz",
+      "results/base_2027/unit_margins.csv",
+      "results/base_2027/units.csv.gz",
+      "results/cold_snap/daily.csv",
+      "results/cold_snap/hourly.csv.gz",
+      "results/cold_snap/unit_margins.csv",
+      "results/cold_snap/units.csv.gz",
+      "results/cold_snap_lng_loss/daily.csv",
+      "results/cold_snap_lng_loss/hourly.csv.gz",
+      "results/cold_snap_lng_loss/unit_margins.csv",
+      "results/cold_snap_lng_loss/units.csv.gz",
+      "results/high_carbon/daily.csv",
+      "results/high_carbon/hourly.csv.gz",
+      "results/high_carbon/unit_margins.csv",
+      "results/high_carbon/units.csv.gz",
+      "results/live/daily.csv",
+      "results/live/hourly.csv.gz",
+      "results/live/inputs_hourly.csv.gz",
+      "results/live/meta.json",
+      "results/live/track_record.csv",
+      "results/offshore_wind/daily.csv",
+      "results/offshore_wind/hourly.csv.gz",
+      "results/offshore_wind/unit_margins.csv",
+      "results/offshore_wind/units.csv.gz",
+      "results/pipeline_expansion/daily.csv",
+      "results/pipeline_expansion/hourly.csv.gz",
+      "results/pipeline_expansion/unit_margins.csv",
+      "results/pipeline_expansion/units.csv.gz",
+      "results/summary.csv",
+      "results/summary.json",
+      "scenarios/01_backcast_2025.yaml",
+      "scenarios/02_base_2027.yaml",
+      "scenarios/03_cold_snap.yaml",
+      "scenarios/04_cold_snap_lng_loss.yaml",
+      "scenarios/05_offshore_wind.yaml",
+      "scenarios/06_pipeline_expansion.yaml",
+      "scenarios/07_high_carbon.yaml",
+      "src/negem/__init__.py",
+      "src/negem/inputs.py",
+      "src/negem/live.py",
+      "src/negem/live_data.py",
+      "src/negem/lp.py",
+      "src/negem/model.py",
+      "src/negem/report.py",
+      "src/negem/simulate.py"
+    ];
+    const files = {};
+    for (const path of FROM_MAIN) files[path] = { url: RAW + path };
+
+    mount(
+      {
+        entrypoint: "app.py",
+        requirements: ["numpy", "pandas", "scipy", "matplotlib", "pyyaml", "altair"],
+        files,
+        // Same theme as .streamlit/config.toml on main
+        streamlitConfig: {
+          "theme.base": "light",
+          "theme.primaryColor": "#3a7dc1",
+          "client.toolbarMode": "viewer",
+        },
+      },
+      document.getElementById("root"),
+    );
+  </script>
+</body>
+</html>
