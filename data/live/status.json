@@ -1,34 +1,35 @@
 {
  "weather (Open-Meteo)": {
   "ok": true,
-  "at": "2026-11-26 20:14 UTC",
-  "last_ok": "2026-11-26 20:14 UTC"
+  "at": "2026-11-27 15:32 UTC",
+  "last_ok": "2026-11-27 15:32 UTC"
  },
  "ISO-NE day-ahead LMPs": {
   "ok": true,
-  "at": "2026-11-26 20:14 UTC",
-  "last_ok": "2026-11-26 20:14 UTC"
+  "at": "2026-11-27 15:32 UTC",
+  "last_ok": "2026-11-27 15:32 UTC"
  },
  "NYMEX Henry Hub futures": {
   "ok": true,
-  "at": "2026-11-26 20:14 UTC",
-  "last_ok": "2026-11-26 20:14 UTC"
+  "at": "2026-11-27 15:32 UTC",
+  "last_ok": "2026-11-27 15:32 UTC"
  },
  "ISO-NE load and fuel mix (EIA-930)": {
   "ok": false,
-  "error": "HTTPError: 504 Server Error: Gateway Timeout for url: https://api.eia.gov/v2/electricity/rto/region-data/data/?api_key=***&frequency=hourly&data%5B0%5D=value&start=2026-10-22T00&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Brespondent%5D%5B%5D=ISNE&facet",
-  "at": "2026-11-26 20:18 UTC",
+  "error": "HTTPError: 504 Server Error: Gateway Timeout for url: https://api.eia.gov/v2/electricity/rto/region-data/data/?api_key=***&frequency=hourly&data%5B0%5D=value&start=2026-10-23T00&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Brespondent%5D%5B%5D=ISNE&facet",
+  "at": "2026-11-27 15:36 UTC",
   "last_ok": "2026-11-25 15:37 UTC"
  },
  "Henry Hub spot (EIA)": {
-  "ok": true,
-  "at": "2026-11-26 20:18 UTC",
+  "ok": false,
+  "error": "HTTPError: 504 Server Error: Gateway Timeout for url: https://api.eia.gov/v2/natural-gas/pri/fut/data/?api_key=***&frequency=daily&data%5B0%5D=value&start=2026-07-30&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Bseries%5D%5B%5D=RNGWHHD",
+  "at": "2026-11-27 15:40 UTC",
   "last_ok": "2026-11-26 20:18 UTC"
  },
  "Heating oil / ULSD spot (EIA)": {
   "ok": false,
-  "error": "HTTPError: 504 Server Error: Gateway Timeout for url: https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=***&frequency=daily&data%5B0%5D=value&start=2026-07-29&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Bseries%5D%5B%5D=EER_EPD2DXL0_PF4_Y35NY_DPG",
-  "at": "2026-11-26 20:22 UTC",
+  "error": "HTTPError: 504 Server Error: Gateway Timeout for url: https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=***&frequency=daily&data%5B0%5D=value&start=2026-07-30&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Bseries%5D%5B%5D=EER_EPD2DXL0_PF4_Y35NY_DPG",
+  "at": "2026-11-27 15:44 UTC",
   "last_ok": "2026-11-25 20:34 UTC"
  }
 }
