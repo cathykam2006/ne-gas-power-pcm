@@ -1,56 +1,53 @@
 {
- "run_at": "2026-11-27 15:44 UTC",
+ "run_at": "2026-11-27 20:01 UTC",
  "run_date": "2026-11-27",
  "window": [
   "2026-11-20",
   "2026-12-03"
  ],
- "load_ratio": 0.9428,
+ "load_ratio": 0.9386,
  "oil_price": 29.61,
  "metrics": {
   "hours": 168,
-  "hourly_mae": 6.76,
-  "hourly_bias": -0.7,
-  "hourly_corr": 0.525,
-  "daily_mae": 1.61,
+  "hourly_mae": 7.0,
+  "hourly_bias": 0.91,
+  "hourly_corr": 0.543,
+  "daily_mae": 2.85,
   "actual_avg": 46.08,
-  "load_mape_pct": 12.05,
-  "track_days_scored": 19,
-  "track_day_ahead_mae": 5.73
+  "load_mape_pct": 11.33,
+  "track_days_scored": 20,
+  "track_day_ahead_mae": 6.06
  },
  "sources": {
   "weather (Open-Meteo)": {
    "ok": true,
-   "at": "2026-11-27 15:32 UTC",
-   "last_ok": "2026-11-27 15:32 UTC"
+   "at": "2026-11-27 20:00 UTC",
+   "last_ok": "2026-11-27 20:00 UTC"
   },
   "ISO-NE day-ahead LMPs": {
    "ok": true,
-   "at": "2026-11-27 15:32 UTC",
-   "last_ok": "2026-11-27 15:32 UTC"
+   "at": "2026-11-27 20:00 UTC",
+   "last_ok": "2026-11-27 20:00 UTC"
   },
   "NYMEX Henry Hub futures": {
    "ok": true,
-   "at": "2026-11-27 15:32 UTC",
-   "last_ok": "2026-11-27 15:32 UTC"
+   "at": "2026-11-27 20:00 UTC",
+   "last_ok": "2026-11-27 20:00 UTC"
   },
   "ISO-NE load and fuel mix (EIA-930)": {
-   "ok": false,
-   "error": "HTTPError: 504 Server Error: Gateway Timeout for url: https://api.eia.gov/v2/electricity/rto/region-data/data/?api_key=***&frequency=hourly&data%5B0%5D=value&start=2026-10-23T00&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Brespondent%5D%5B%5D=ISNE&facet",
-   "at": "2026-11-27 15:36 UTC",
-   "last_ok": "2026-11-25 15:37 UTC"
+   "ok": true,
+   "at": "2026-11-27 20:01 UTC",
+   "last_ok": "2026-11-27 20:01 UTC"
   },
   "Henry Hub spot (EIA)": {
-   "ok": false,
-   "error": "HTTPError: 504 Server Error: Gateway Timeout for url: https://api.eia.gov/v2/natural-gas/pri/fut/data/?api_key=***&frequency=daily&data%5B0%5D=value&start=2026-07-30&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Bseries%5D%5B%5D=RNGWHHD",
-   "at": "2026-11-27 15:40 UTC",
-   "last_ok": "2026-11-26 20:18 UTC"
+   "ok": true,
+   "at": "2026-11-27 20:01 UTC",
+   "last_ok": "2026-11-27 20:01 UTC"
   },
   "Heating oil / ULSD spot (EIA)": {
-   "ok": false,
-   "error": "HTTPError: 504 Server Error: Gateway Timeout for url: https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=***&frequency=daily&data%5B0%5D=value&start=2026-07-30&sort%5B0%5D%5Bcolumn%5D=period&sort%5B0%5D%5Bdirection%5D=asc&offset=0&length=5000&facets%5Bseries%5D%5B%5D=EER_EPD2DXL0_PF4_Y35NY_DPG",
-   "at": "2026-11-27 15:44 UTC",
-   "last_ok": "2026-11-25 20:34 UTC"
+   "ok": true,
+   "at": "2026-11-27 20:01 UTC",
+   "last_ok": "2026-11-27 20:01 UTC"
   }
  }
 }
