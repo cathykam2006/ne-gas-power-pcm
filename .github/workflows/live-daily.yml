@@ -27,12 +27,22 @@ jobs:
       EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
       PYTHONPATH: src
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install -r requirements.txt -r requirements-live.txt
+      - name: Install packages
+        # --prefer-binary: if a brand-new release has no prebuilt wheel yet (lxml 6.2.0 on
+        # 2026-11-27), use the previous version's wheel instead of trying to compile it.
+        # The loop retries a brief PyPI hiccup before giving up.
+        run: |
+          for i in 1 2 3; do
+            pip install --prefer-binary --retries 5 --timeout 60 \
+              -r requirements.txt -r requirements-live.txt && exit 0
+            echo "pip install failed (attempt $i), retrying in 30s"; sleep 30
+          done
+          exit 1
       - name: Pull live data
         run: python -m negem.live_data --strict
       - name: Re-solve the model on live inputs
